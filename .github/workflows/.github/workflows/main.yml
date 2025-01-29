@@ -1,0 +1,35 @@
+name: Upload Provided Binary
+
+on:
+  push:
+    branches:
+      - main  # Trigger when pushing to the main branch
+  workflow_dispatch:  # Allows manual trigger
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Upload Provided Binary
+        uses: actions/upload-artifact@v3
+        with:
+          name: SymptoRust-Binary
+          path: path/to/your/professor-provided-binary  # Change this to the correct path
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: path/to/your/professor-provided-binary  # Change this to the correct path
+          tag_name: v1.0
+          release_name: SymptoRust v1.0
+          body: |
+            This is the first release of SymptoRust.
+            - Provided by Professor.
+            - Download the binary and use it directly.
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
