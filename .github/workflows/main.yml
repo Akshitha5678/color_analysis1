@@ -1,61 +1,64 @@
-name: Build and Release Color Analyzer Tool
+ name: Build and Release Color Analyzer Tool
 
-on:
-  push:
-    branches:
-      - main  # Trigger when pushing to the main branch
-  workflow_dispatch:  # Allows manual trigger
 
-jobs:
-  build_and_release:
-    runs-on: ubuntu-latest
+ on:
+   push:
+     branches:
+       - main # Trigger when pushing to the main branch 
+   workflow_dispatch: # Allows manual trigger
 
-    steps:
-      # Step 1: Checkout the repository
-      - name: Checkout Repository
-        uses: actions/checkout@v3
+ jobs:
+   build_and_release:
+     runs-on: ubuntu-latest
+  
+     steps:
+       # Step 1: Checkout the repository
+       - name: Checkout Repository
+         uses: actions/checkout@v3
 
-      # Step 2: Set up Rust
-      - name: Set up Rust
-        uses: actions/setup-rust@v1
-        with:
-          rust-version: stable  # Use the stable version of Rust
+       # Step 2: Set up Rust
+       - name: Set up Rust
+         uses: actions/setup-rust@v1
+         with:
+           rust-version: stable # Use the stable version of Rust
 
-      # Step 3: Build the Color Analyzer Tool
-      - name: Build Color Analyzer Tool
-        run: |
-          cargo build --release  # Builds the project in release mode
+       # Step 3: Build the Color Analyzer Tool
+       - name: Build Color Analyzer Tool
+         run: |
+           cargo build --release  # Builds the project in release mode 
 
-      # Step 4: Upload the Binary File as an Artifact
-      - name: Upload Color Analyzer Binary
-        uses: actions/upload-artifact@v3
-        with:
-          name: color-analyzer-binary
-          path: target/release/color_analyzer  # Path to the compiled binary
+       # Step 4: Upload the Binary Files as an Artifact
+       - name: Upload Color Analyzer Binary 
+         uses: actions/upload-artifact@v3
+         with:
+           name: color-analyzer-binary
+           path: target/release/color_analyzer  # Path to the compiled binary
 
-      # Step 5: Create GitHub Release
-      - name: Create GitHub Release
-        uses: softprops/action-gh-release@v1
-        with:
-          files: target/release/color_analyzer  # Ensure the binary file is correct
-          tag_name: v1.0  # Tag for the release
-          release_name: Color Analyzer Tool v1.0  # Release title
+       # Step 5: Create GithUB Release
+       - name: Create Github Release 
+         uses: softprops/action-gh-release@v1
+         with:
+          files: target/release/color_analyzer # Ensure the binary file is correct
+          tag_name: v1.0  # Tag for the release 
+          release_name: Color Analyzer Tool v1.0 # Release title 
           body: |
             This is the first release of the Color Analyzer Tool.
-            - Input your skin tone and get the perfect color suggestions for clothing and makeup.
+            - Input your skin tone and get the perfect color suggestion for clothing and jewellery.
             - Download the binary and use it directly.
 
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Auth token to create releases
 
-      # Optional: Clean up old releases (if needed)
-      - name: Delete Old Releases (Optional)
-        run: |
-          # Deletes the latest release (if you want to remove old releases automatically)
-          RELEASE_ID=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-            "https://api.github.com/repos/${{ github.repository }}/releases" | jq '.[0].id')
-          curl -X DELETE -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-            "https://api.github.com/repos/${{ github.repository }}/releases/$RELEASE_ID"
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Auth token to create releases
+
+
+Optional: Clean up old releases (if needed)
+name: Delete Old Releases (Optional)
+run: |
+  # Deletes the latest release (if you want to remove old releases automatically)
+  RELEASE_ID=$(curl -s -H "Authorization: token ${{ secrets.GUTHUB_TOKEN }}" \
+    "https"//api.github.com/repos/${{ github.repository }}/releases" | jq '.[0].id')
+  Curl -X DELETE -H "Authorization: token ${{ secrets. GITHUB_TOKEN }}" \
+    "https://api.github.com/repos/$ {{github.repository }}/releases/$RELEASE_ID"
 
 
 
