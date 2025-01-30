@@ -1,0 +1,66 @@
+  name: Build and release Color Analyzer tool
+
+
+  on:
+    push:
+      branches:
+        - main # Trigger when pushing to the main branch 
+    workflow_dispatch: # Allows manual trigger 
+
+
+  Jobs:
+    build_and_release:
+      runs-on: ubuntu-latest
+
+      steps: 
+        - name: Checkout Repository
+          uses: actions/checkout@v3
+
+        
+        - name: Set up Rust
+          uses: actions/setup-rust@v1
+          with:
+            rust-version: stable # Use the stable version of Rust 
+
+        - name: Build Color Analyzer Tool
+         run: |
+           cargo build --release # Builds the project in release mode 
+
+       
+        - name: Upload Color Analyzer Binary
+          uses: actions/upload-artifact@v3
+          with:
+            name:c color-analyzer-binary
+            path: target/release/color_analyzer  # Path to the compiled binary
+
+
+        - name: Create Github Release
+          uses: softprops/ action-gh-release@v1
+          with:
+            files: target/release/color_analyzer  # Ensure the binary file is correct 
+            tag_name: v1.0 # Tag for the release 
+            release_name: Color Analyzer toolv1.0   # Release title 
+          body: |
+            This is the first release of the Color Analyzer Tool.
+            - Input you skin tone and get the perfect color suggestion for clothing and jewellery
+            - Download the binary and use it directly.
+
+ 
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Auth token to create releases 
+
+
+   delete_old_releases:
+     runs-on: ubuntu-latest
+     steps:
+       - name: Delete Old Releases (Optional)
+         run:|
+           RELEASE_ID=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+             "https://api.github.com/repos/${{github.repository }}/releases" | jq '.[0].id)
+
+           curl -X DELETE -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}"  \
+             "https://api.github.coom/repos/${{ github.repository }}/releases/$RELEASE_ID"
+
+
+
+
